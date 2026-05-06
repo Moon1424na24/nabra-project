@@ -146,16 +146,21 @@ def ai_is_in_scope(user_text):
         }
 
         response = requests.post(url, headers=headers, json=data)
-
+        
         result = response.json()
 
-print(result)
+        print(result)
 
-if "candidates" not in result:
+        if "candidates" not in result:
+            return True
+
+        answer = result["candidates"][0]["content"]["parts"][0]["text"]
+
+        return "نعم" in answer
+
+except:
     return True
-
-answer = result["candidates"][0]["content"]["parts"][0]["text"]
-
+    
 # ----------------------------------------------------
 # برومبت قوي باللهجات (الخيار A)
 # ----------------------------------------------------
