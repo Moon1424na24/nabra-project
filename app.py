@@ -115,18 +115,6 @@ def find_in_dictionary(user_input):
     return None, None, candidate
 
 # ----------------------------------------------------
-# تهيئة Gemini
-# ----------------------------------------------------
-
-API_KEY = os.getenv("API_KEY")
-
-try:
-    genai.configure(api_key=API_KEY)
-    print("🤖 Gemini initialized successfully")
-except Exception as e:
-    print("❌ Gemini failed to initialize:", e)
-
-# ----------------------------------------------------
 
 def ai_is_in_scope(user_text):
 
@@ -161,13 +149,12 @@ def ai_is_in_scope(user_text):
 
         result = response.json()
 
-        answer = result["candidates"][0]["content"]["parts"][0]["text"]
+print(result)
 
-        return "نعم" in answer
+if "candidates" not in result:
+    return True
 
-    except Exception as e:
-        print("Scope Error:", e)
-        return True
+answer = result["candidates"][0]["content"]["parts"][0]["text"]
 
 # ----------------------------------------------------
 # برومبت قوي باللهجات (الخيار A)
@@ -263,11 +250,12 @@ def ask_ai(word, dialect):
 
         result = response.json()
 
-        return result["candidates"][0]["content"]["parts"][0]["text"]
+print(result)
 
-    except Exception as e:
-        print("AI Error:", e)
-        return f"⚠️ حدث خطأ أثناء الاتصال بالمساعد الخارجي:\n{e}"
+if "candidates" not in result:
+    return f"⚠️ Gemini Error:\n{result}"
+
+return result["candidates"][0]["content"]["parts"][0]["text"]
 
 # ----------------------------------------------------
 
