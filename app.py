@@ -145,8 +145,12 @@ def ai_is_in_scope(user_text):
             ]
         }
 
-        response = requests.post(url, headers=headers, json=data)
-        
+        response = requests.post(
+            url,
+            headers=headers,
+            json=data
+        )
+
         result = response.json()
 
         print(result)
@@ -158,8 +162,9 @@ def ai_is_in_scope(user_text):
 
         return "نعم" in answer
 
-except:
-    return True
+    except Exception as e:
+        print("AI Scope Error:", e)
+        return True
     
 # ----------------------------------------------------
 # برومبت قوي باللهجات (الخيار A)
