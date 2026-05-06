@@ -2,8 +2,7 @@ from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 import json
 import re
-from google import genai
-from google.genai.errors import APIError
+import google.generativeai as genai
 import os
 from dotenv import load_dotenv
 
@@ -120,12 +119,14 @@ def find_in_dictionary(user_input):
 # ----------------------------------------------------
 
 API_KEY = os.getenv("API_KEY")
+
 try:
-    client = genai.Client(api_key=API_KEY)
+    genai.configure(api_key=API_KEY)
     print("🤖 Gemini initialized successfully")
-except:
-    client = None
-    print("❌ Gemini failed to initialize")
+except Exception as e:
+    print("❌ Gemini failed to initialize:", e)
+
+# ----------------------------------------------------
 
 def ai_is_in_scope(user_text):
     """
@@ -133,9 +134,7 @@ def ai_is_in_scope(user_text):
     هل يتعلق باللهجات/معنى الكلمات؟
     أم سؤال عام يجب رفضه؟
     """
-    if not client:
-        return True  # إذا ما فيه AI نخليه يكمل طبيعي
-
+    
     prompt = (
         "أنت فلتر متخصص فقط في تصنيف الأسئلة.\n"
         "سأعطيك سؤال مستخدم.\n"
@@ -147,9 +146,9 @@ def ai_is_in_scope(user_text):
     )
 
     try:
-        res = client.models.generate_content(
-            model="gemini-2.5-flash",
-            contents=prompt
+       res = genai.GenerativeModel("gemini-2.5-flash").generate_content(
+    prompt
+)
         )
         answer = res.text.strip().lower()
         return answer == "نعم"
@@ -225,15 +224,13 @@ def get_ai_persona_prompt(user_question: str, chosen_dialect: str) -> str:
 # دالة سؤال Gemini
 # ----------------------------------------------------
 def ask_ai(word, dialect):
-    if not client:
-        return "⚠️ خدمة المساعد الخارجي غير مفعّلة."
-
+    
     try:
         prompt = get_ai_persona_prompt(word, dialect)
-        response = client.models.generate_content(
-            model="gemini-2.5-flash",
-            contents=prompt
-        )
+        
+        response = genai.GenerativeModel("gemini-2.5-flash").generate_content(
+    prompt
+)
         return response.text.strip()
 
     except Exception as e:
