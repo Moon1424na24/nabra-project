@@ -145,7 +145,7 @@ def ai_is_in_scope(user_text):
     )
 
     try:
-        res = genai.GenerativeModel("gemini-2.5-flash").generate_content(
+        res = genai.GenerativeModel("gemini-1.5-flash").generate_content(
             prompt
         )
 
@@ -227,7 +227,7 @@ def ask_ai(word, dialect):
     try:
         prompt = get_ai_persona_prompt(word, dialect)
 
-        response = genai.GenerativeModel("gemini-2.5-flash").generate_content(
+        response = genai.GenerativeModel("gemini-1.5-flash").generate_content(
             prompt
         )
 
