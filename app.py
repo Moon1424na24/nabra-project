@@ -250,12 +250,16 @@ def ask_ai(word, dialect):
 
         result = response.json()
 
-print(result)
+        print(result)
 
-if "candidates" not in result:
-    return f"⚠️ Gemini Error:\n{result}"
+        if "candidates" not in result:
+            return f"⚠️ Gemini Error:\n{result}"
 
-return result["candidates"][0]["content"]["parts"][0]["text"]
+        return result["candidates"][0]["content"]["parts"][0]["text"]
+
+    except Exception as e:
+        print("AI Error:", e)
+        return f"⚠️ حدث خطأ أثناء الاتصال بالمساعد الخارجي:\n{e}"
 
 # ----------------------------------------------------
 
