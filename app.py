@@ -224,19 +224,21 @@ def get_ai_persona_prompt(user_question: str, chosen_dialect: str) -> str:
 # دالة سؤال Gemini
 # ----------------------------------------------------
 def ask_ai(word, dialect):
-    
+
     try:
         prompt = get_ai_persona_prompt(word, dialect)
-        
+
         response = genai.GenerativeModel("gemini-2.5-flash").generate_content(
-    prompt
-)
+            prompt
+        )
+
         return response.text.strip()
 
     except Exception as e:
         print("AI Error:", e)
         return "⚠️ حدث خطأ أثناء الاتصال بالمساعد الخارجي."
 
+# ----------------------------------------------------
 
 def ai_reply_formatted(word, dialect):
     ai_text = ask_ai(word, dialect)
