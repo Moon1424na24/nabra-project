@@ -142,15 +142,15 @@ prompt = (
     )
 
     try:
-        res = genai.GenerativeModel("gemini-2.5-flash").generate_content(
-            prompt
-        )
-
-        answer = res.text.strip().lower()
-        return answer == "نعم"
-
+            res = genai.GenerativeModel("gemini-2.5-flash").generate_content(
+                prompt
+            )
+    
+            answer = res.text.strip().lower()
+            return answer == "نعم"
+    
     except:
-        return True
+            return True
 # ----------------------------------------------------
 # برومبت قوي باللهجات (الخيار A)
 # ----------------------------------------------------
