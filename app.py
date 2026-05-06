@@ -149,7 +149,6 @@ def ai_is_in_scope(user_text):
        res = genai.GenerativeModel("gemini-2.5-flash").generate_content(
     prompt
 )
-        )
         answer = res.text.strip().lower()
         return answer == "نعم"
     
