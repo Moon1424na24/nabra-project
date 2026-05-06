@@ -130,9 +130,12 @@ except Exception as e:
 
 def ai_is_in_scope(user_text):
     """
-    يطلب من الذكاء الاصطناعي تصنيف السؤال: هل يتعلق باللهجات/معنى الكلمات؟ أم سؤال عام يجب رفضه؟
+    يطلب من الذكاء الاصطناعي تصنيف السؤال:
+    هل يتعلق باللهجات/معنى الكلمات؟
+    أم سؤال عام يجب رفضه؟
     """
-prompt = (
+
+    prompt = (
         "أنت فلتر متخصص فقط في تصنيف الأسئلة.\n"
         "سأعطيك سؤال مستخدم.\n"
         "أجب فقط بكلمة واحدة.\n"
@@ -142,15 +145,16 @@ prompt = (
     )
 
     try:
-            res = genai.GenerativeModel("gemini-2.5-flash").generate_content(
-                prompt
-            )
-    
-            answer = res.text.strip().lower()
-            return answer == "نعم"
-    
+        res = genai.GenerativeModel("gemini-2.5-flash").generate_content(
+            prompt
+        )
+
+        answer = res.text.strip().lower()
+        return answer == "نعم"
+
     except:
-            return True
+        return True
+
 # ----------------------------------------------------
 # برومبت قوي باللهجات (الخيار A)
 # ----------------------------------------------------
