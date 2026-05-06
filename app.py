@@ -2,7 +2,8 @@ from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 import json
 import re
-import google.generativeai as genai
+from google import genai
+from google.genai.errors import APIError
 import os
 from dotenv import load_dotenv
 
