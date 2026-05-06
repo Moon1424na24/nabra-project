@@ -246,7 +246,11 @@ def ask_ai(word, dialect):
             ]
         }
 
-        response = requests.post(url, headers=headers, json=data)
+        response = requests.post(
+            url,
+            headers=headers,
+            json=data
+        )
 
         result = response.json()
 
@@ -260,7 +264,6 @@ def ask_ai(word, dialect):
     except Exception as e:
         print("AI Error:", e)
         return f"⚠️ حدث خطأ أثناء الاتصال بالمساعد الخارجي:\n{e}"
-
 # ----------------------------------------------------
 
 def ai_reply_formatted(word, dialect):
