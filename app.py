@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 import json
 import re
-import google.generativeai as genai
+import requests
 import os
 from dotenv import load_dotenv
 
@@ -131,7 +131,6 @@ except Exception as e:
 def ai_is_in_scope(user_text):
 
     prompt = (
-        "أنت فلتر متخصص فقط في تصنيف الأسئلة.\n"
         "أجب فقط بنعم أو لا.\n"
         "نعم = إذا كان السؤال عن معنى كلمة أو لهجة أو ترجمة.\n"
         "لا = إذا كان سؤال عام.\n"
@@ -139,11 +138,30 @@ def ai_is_in_scope(user_text):
     )
 
     try:
-        model = genai.GenerativeModel("models/gemini-1.5-flash")
 
-        response = model.generate_content(prompt)
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={API_KEY}"
 
-        answer = response.text.strip().lower()
+        headers = {
+            "Content-Type": "application/json"
+        }
+
+        data = {
+            "contents": [
+                {
+                    "parts": [
+                        {
+                            "text": prompt
+                        }
+                    ]
+                }
+            ]
+        }
+
+        response = requests.post(url, headers=headers, json=data)
+
+        result = response.json()
+
+        answer = result["candidates"][0]["content"]["parts"][0]["text"]
 
         return "نعم" in answer
 
@@ -223,15 +241,33 @@ def ask_ai(word, dialect):
     try:
         prompt = get_ai_persona_prompt(word, dialect)
 
-        model = genai.GenerativeModel("models/gemini-1.5-flash")
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={API_KEY}"
 
-        response = model.generate_content(prompt)
+        headers = {
+            "Content-Type": "application/json"
+        }
 
-        return response.text
+        data = {
+            "contents": [
+                {
+                    "parts": [
+                        {
+                            "text": prompt
+                        }
+                    ]
+                }
+            ]
+        }
+
+        response = requests.post(url, headers=headers, json=data)
+
+        result = response.json()
+
+        return result["candidates"][0]["content"]["parts"][0]["text"]
 
     except Exception as e:
         print("AI Error:", e)
-        return f"⚠️ حدث خطأ أثناء الاتصال بالمساعد الخارجي: {e}"
+        return f"⚠️ حدث خطأ أثناء الاتصال بالمساعد الخارجي:\n{e}"
 
 # ----------------------------------------------------
 
