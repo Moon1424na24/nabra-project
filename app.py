@@ -129,30 +129,26 @@ except Exception as e:
 # ----------------------------------------------------
 
 def ai_is_in_scope(user_text):
-    """
-    يطلب من الذكاء الاصطناعي تصنيف السؤال:
-    هل يتعلق باللهجات/معنى الكلمات؟
-    أم سؤال عام يجب رفضه؟
-    """
 
     prompt = (
         "أنت فلتر متخصص فقط في تصنيف الأسئلة.\n"
-        "سأعطيك سؤال مستخدم.\n"
-        "أجب فقط بكلمة واحدة.\n"
-        "نعم = إذا كان السؤال يتعلق بمعنى كلمة أو لهجة أو ترجمة.\n"
+        "أجب فقط بنعم أو لا.\n"
+        "نعم = إذا كان السؤال عن معنى كلمة أو لهجة أو ترجمة.\n"
         "لا = إذا كان سؤال عام.\n"
         f"السؤال: {user_text}"
     )
 
     try:
-        res = genai.GenerativeModel("gemini-1.5-flash").generate_content(
-            prompt
-        )
+        model = genai.GenerativeModel("gemini-1.5-flash")
 
-        answer = res.text.strip().lower()
-        return answer == "نعم"
+        response = model.generate_content(prompt)
 
-    except:
+        answer = response.text.strip().lower()
+
+        return "نعم" in answer
+
+    except Exception as e:
+        print("Scope Error:", e)
         return True
 
 # ----------------------------------------------------
@@ -227,15 +223,15 @@ def ask_ai(word, dialect):
     try:
         prompt = get_ai_persona_prompt(word, dialect)
 
-        response = genai.GenerativeModel("gemini-1.5-flash").generate_content(
-            prompt
-        )
+        model = genai.GenerativeModel("gemini-1.5-flash")
 
-        return response.text.strip()
+        response = model.generate_content(prompt)
+
+        return response.text
 
     except Exception as e:
         print("AI Error:", e)
-        return "⚠️ حدث خطأ أثناء الاتصال بالمساعد الخارجي."
+        return f"⚠️ حدث خطأ أثناء الاتصال بالمساعد الخارجي: {e}"
 
 # ----------------------------------------------------
 
